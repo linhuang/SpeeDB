@@ -72,6 +72,7 @@ typedef struct
 	char* p_filename;
 	char* q_filename;
 	int pairwise;
+	int dummy;
 } filter_pars_t;
 
 typedef struct

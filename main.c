@@ -81,6 +81,7 @@ static int filter_usage()
 	printf("         p    read filter 1's p threshold from file\n");
 	printf("         q    read filter 2's p threshold from file\n");
 	printf("         w    pairwise filtering [default: queries are not from the database]\n");
+	printf("	 d    dummy mode [output pairs of individuals in speedb format]\n");
         printf("\n");
         return 1;
 }
@@ -107,6 +108,7 @@ void set_default_filter_pars(filter_pars_t* pars)
 	pars->p_filename = NULL;
 	pars->q_filename = NULL;
 	pars->pairwise = 0;
+	pars->dummy = 0;
 }
 
 void set_default_query_pars(query_pars_t* pars)
@@ -169,7 +171,7 @@ int main(int argc, char *argv[])
 		set_default_filter_pars(pars);
 
 		int c;
-		while ((c = getopt(argc-1, argv+1, "b:s:e:1:2:p:q:w")) >= 0) {
+		while ((c = getopt(argc-1, argv+1, "b:s:e:1:2:p:q:wd")) >= 0) {
 				switch (c) {
 					case 'b': pars->block_size = atof(optarg); break;
 					case 's': pars->step_size = atof(optarg); break;
@@ -179,6 +181,7 @@ int main(int argc, char *argv[])
 					case 'p': pars->p_filename = (char*) malloc((strlen(optarg) + 1) * sizeof(char)); strcpy(pars->p_filename, optarg); break;
 					case 'q': pars->q_filename = (char*) malloc((strlen(optarg) + 1) * sizeof(char)); strcpy(pars->q_filename, optarg); break;
 					case 'w': pars->pairwise = 1; break;
+					case 'd': pars->dummy = 1; break;
 					case '?': filter_usage(); return 1;
 					default: return 1;
 				}

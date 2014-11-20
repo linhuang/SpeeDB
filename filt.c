@@ -427,6 +427,21 @@ candidates_t* dedupIBD(candidates_t* candidates)
 	return dedup_candidates;
 }
 
+void printDummyOutput(char* output_filename, dbs_t* dbs, queries_t* queries)
+{
+	FILE* output = fileOpenW(output_filename);
+        int64_t i, j;
+        fprintf (output, "Query\tTuple\tStart\tSNP_index\tEnd\tSNP_index\n");
+	for(i = 0; i < queries->query_count; i++)
+        {
+		for(j = 0; j < dbs->tuple_count; j++)
+		{
+	                fprintf (output, "%" PRIu64 "\t%" PRIu64 "\t%f\t%" PRIu64 "\t%f\t%" PRIu64 "\n", i, j, dbs->genetic_position[0], 0, dbs->genetic_position[dbs->SNP_count - 1], dbs->SNP_count - 1);
+		}
+        }
+        fileClose(output);
+}
+
 int filterDB(char* dbs_filename, char* query_filename, char* output_filename, filter_pars_t* pars)
 {
 	clock_t t;
@@ -439,6 +454,12 @@ int filterDB(char* dbs_filename, char* query_filename, char* output_filename, fi
         queries_t* queries = loadQuery(query_filename, dbs, pars);
 	printf("Loaded %d queries\n", queries->query_count);
         printf("Total loading time: %.2f sec\n\n", (float)(clock() - t) / CLOCKS_PER_SEC);
+
+	if(pars->dummy == 1)
+	{
+		printDummyOutput(output_filename, dbs, queries);
+		return 1;
+	}
 
 	t = clock();
         printf("Precalculating ...\n");
